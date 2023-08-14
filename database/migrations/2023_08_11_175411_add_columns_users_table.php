@@ -17,7 +17,8 @@ class AddColumnsUsersTable extends Migration
             $table->string('identificacion')->unique();
             $table->string('lastName');
             $table->string('photo')->nullable();
-            $table->unsignedBigInteger('role_id');
+            $table->unsignedBigInteger('role_id')->default(2);
+            $table->boolean('status')->default(1);
 
             $table->foreign('role_id')->references('id')->on('roles');
         });
@@ -25,6 +26,7 @@ class AddColumnsUsersTable extends Migration
 
     /**
      * Reverse the migrations.
+     * 
      *
      * @return void
      */
@@ -36,6 +38,7 @@ class AddColumnsUsersTable extends Migration
             $table->dropColumn('photo');
             $table->dropForeign(['role_id']);
             $table->dropColumn('role_id');
+            $table->dropColumn('status');
         });
 
     }
