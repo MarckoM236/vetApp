@@ -11,7 +11,7 @@
 
 @section('content')
 <div class="container mb-5" style="width: 60%;">
-    <form method="POST" action="{{ route('user.create') }} " >
+    <form method="POST" action="{{ route('user.create') }} " enctype="multipart/form-data">
         @csrf
 
         <div class="form-group mb-3">
@@ -88,9 +88,10 @@
 
         <div class="form-group mb-3">
             <label for="photo" class="form-label">Foto</label>
-
-            <input id="photo" type="file" class="form-control" name="photo"  autocomplete="photo">
-            
+            <input id="photo" type="file" class="form-control" name="photo"  autocomplete="photo">  
+        </div>
+        <div class="d-flex justify-content-center">
+            <img  src="" alt="" style="display: none; width:100px; height:100px;" id="preview_img" class="mt-2">
         </div>
 
         <div class="form-group mb-3">
@@ -115,22 +116,41 @@
 @endsection
 
 @section('extra-js')
-@if(session('success'))
-        <script>    
-            Swal.fire(
-            'Exito!',
-            '{{ session('error') }}',
-            'success'
-            )
-        </script>
-   @endif
+    @if(session('success'))
+            <script>    
+                Swal.fire(
+                'Exito!',
+                '{{ session('success') }}',
+                'success'
+                )
+            </script>
+    @endif
     @if(session('error'))
         <script>    
             Swal.fire(
             'Algo ha salido mal!',
-            '{{ session('success') }}',
+            '{{ session('error') }}',
             'error'
             )
         </script>
-   @endif
+    @endif
+
+    <!-- Preview of the uploaded image-->
+    <script>
+    $(document).ready(async function() {
+        let evidencia = $('#photo');
+        let preview = $('#preview_img');
+
+        evidencia.change(function(){
+            let file = this.files[0];
+            if (file == null) {
+                    preview.hide();
+                    preview.attr('src', '');
+            }else{
+                preview.show();
+                preview.attr('src', URL.createObjectURL(file));
+            }
+        });
+        });
+    </script>
 @endsection

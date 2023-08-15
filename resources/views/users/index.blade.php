@@ -44,15 +44,29 @@
                     @else
                         <td>Desactivado</td>
                     @endif
-                    <td><a href="#" class="btn btn-outline-primary"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a> 
-                        || 
-                        <a href="#" class="btn btn-outline-danger"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                        ||
-                        @if($user->status == 1)
-                            <a href="#" class="btn btn-outline-danger"><i class="fa fa-ban" aria-hidden="true"></i></a>
-                        @else
-                            <a href="#" class="btn btn-outline-success"><i class="fa fa-check-circle" aria-hidden="true"></i></a>
-                        @endif
+                    <td>
+                        <div class="d-flex">
+                            <a href="{{route('user.edit',['id'=>$user->id])}}" class="btn btn-outline-primary"><i class="fa fa-pencil-square-o" aria-hidden="true" title="Editar"></i></a> 
+                            ||
+                            <a href="#" class="btn btn-outline-danger" id="userDelete" onclick="deleteUser({{$user->id}})" ><i class="fa fa-trash" aria-hidden="true" title="Eliminar"></i></a>
+                            ||
+                            @if($user->status == 1)
+                            <form action="{{route('user.status',['id'=>$user->id])}}" method="POST" >
+                            @csrf
+                            @method('PUT')
+                                <input type="hidden" name="status" value="0">
+                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-ban" aria-hidden="true" title="Deshabilitar"></i></button>
+                            </form>
+                            @else
+                            <form action="{{route('user.status',['id'=>$user->id])}}" method="POST" >
+                            @csrf
+                            @method('PUT')
+                                <input type="hidden" name="status" value="1">
+                                <button type="submit" class="btn btn-outline-success"><i class="fa fa-check-circle" aria-hidden="true" title="Habilitar"></i></button>
+                            </form>
+                                
+                            @endif
+                        </div>
                     </td>
                 </tr> 
                 @endforeach  
@@ -66,5 +80,57 @@
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
     new DataTable('#user-table');
+</script>
+@if(session('success'))
+    <script>    
+        Swal.fire(
+        'Exito!',
+        '{{ session('success') }}',
+        'success'
+        )
+    </script>
+@endif
+@if(session('error'))
+    <script>    
+        Swal.fire(
+        'Algo ha salido mal!',
+        '{{ session('error') }}',
+        'error'
+        )
+    </script>
+@endif
+<script>
+    function deleteUser(id){
+        var url = `/user/${id}/delete`;
+        Swal.fire({
+                title: 'Confirmar',
+                text: '¿Estás seguro de que desea eliminar el usuario?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire('Usuario eliminado', 'El usuario ha sido eliminado exitosamente.', 'success');
+                                window.location.reload();
+                            } else {
+                                Swal.fire('Error', 'No se pudo eliminar el usuario.', 'error');
+                            }
+                        },
+                        error: function() {
+                            Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
+                        }
+                    });
+                }
+            });
+    }
 </script>
 @endsection

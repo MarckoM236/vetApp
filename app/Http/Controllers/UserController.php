@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -68,12 +69,20 @@ class UserController extends Controller
             $user->lastName = $request->lastName;
             $user->email = $request->email;
             $user->password = Hash::make($request->password);
-            $user->role_id = $request->role;
-            $user->photo = $request->photo ? $request->photo : NULL;
+            $user->role_id = $request->role ? $request->role : 2;
+
+            if ($request->hasFile('photo')) {
+
+                $archivo = $request->file('photo');
+                $nombre = $archivo->getClientOriginalName();
+                $renombrado = time() . '_' . $nombre;
+                $ruta = $archivo->storeAs('profile', $renombrado, 'public');
+                
+                $user->photo = $ruta;
+            }
             $user->save();
 
-            return redirect()->route('user.create')->with('success', 'Usuario creado exitosamente');
-
+            return redirect()->route('user.index')->with('success', 'Usuario creado exitosamente');
         }
     }
 
@@ -96,7 +105,12 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = $this->model::find($id);
+        if (!$user) {
+            return redirect()->route('user.index')->with('error', 'Usuario no encontrado');
+        }
+        
+        return view('users.edit',['user' => $user]);
     }
 
     /**
@@ -108,7 +122,50 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'identificacion' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
+            'lastName' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['nullable', 'required_if:switch,on', 'string', 'min:8', 'confirmed']
+        ]);
+
+        $user = $this->model::find($id);
+        if (!$user) {
+            return redirect()->route('user.index')->with('error', 'Usuario no encontrado');
+        }
+
+        if(!$request->password==null){
+            $user->password = Hash::make($request->password);
+        }
+
+        if ($request->hasFile('photo')) {
+            
+            $rutaArchivo = 'public/'.$user->photo;
+            $rutaArchivo = str_replace('/', '\\', $rutaArchivo);
+    
+            if (Storage::exists($rutaArchivo)) {
+                Storage::delete($rutaArchivo);
+            }
+    
+            // Subir el nuevo archivo
+            $archivo = $request->file('photo');
+            $nombre = $archivo->getClientOriginalName();
+            $renombrado = time() . '_' . $nombre;
+            $ruta = $archivo->storeAs('profile', $renombrado, 'public');
+            
+            $user -> photo = $ruta;
+        }
+
+        $user->identificacion = $request->identificacion;
+        $user->name = $request->name;
+        $user->lastName = $request->lastName;
+        $user->email = $request->email;
+        $user->role_id = $request->role ? $request->role : 2;
+        $user->save();
+
+        return redirect()->route('user.index')->with('success', 'Usuario actualizado exitosamente');
+        
     }
 
     /**
@@ -119,6 +176,38 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $user = $this->model::find($id);
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'Usuario no encontrado.']);
+        }
+
+        $rutaArchivo = 'public/'.$user->photo;
+        $rutaArchivo = str_replace('/', '\\', $rutaArchivo);
+        
+        if (Storage::exists($rutaArchivo)) {
+            Storage::delete($rutaArchivo);
+        }
+        
+        $user->delete();
+    
+        return response()->json(['success' => true, 'message' => 'El usuario ha sido eliminado correctamente.']);
+    
+    }
+
+    public function updateStatus(Request $request, $id){
+        $user = $this->model::find($id);
+        if (!$user) {
+            return redirect()->route('user.index')->with('error', 'Usuario no encontrado');
+        }
+
+        $user->status = $request->status;
+        $user->save();
+
+        if($request->status == 1){
+            return redirect()->route('user.index')->with('success', 'Se habilito el usuario exitosamente');
+        }
+        else{
+            return redirect()->route('user.index')->with('success', 'Se deshabilito el usuario exitosamente');
+        }
     }
 }

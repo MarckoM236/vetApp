@@ -22,6 +22,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/user/create',[UserController::class,'create'])->name('user.create');
     Route::post('/user/create',[UserController::class,'store'])->name('user.store');
     Route::get('/user/index',[UserController::class,'index'])->name('user.index');
+    Route::get('/user/{id}/delete',[UserController::class,'destroy'])->name('user.delete');
+    Route::get('/user/{id}/edit',[UserController::class,'edit'])->name('user.edit');
+    Route::put('/user/{id}/update',[UserController::class,'update'])->name('user.update');
+    Route::put('/user/{id}/status',[UserController::class,'updateStatus'])->name('user.status');
 });
 
 
