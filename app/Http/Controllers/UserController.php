@@ -94,7 +94,12 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = $this->model::find($id);
+        if (!$user) {
+            return redirect()->route('user.index')->with('error', 'Usuario no encontrado');
+        }
+        
+        return view('users.view',['user' => $user]);
     }
 
     /**
@@ -133,6 +138,14 @@ class UserController extends Controller
         $user = $this->model::find($id);
         if (!$user) {
             return redirect()->route('user.index')->with('error', 'Usuario no encontrado');
+        }
+
+        $userExist = $this->model::where('users.email',$request->email)
+        ->where('id','!=',$id)
+        ->exists();
+
+        if($userExist){
+            return redirect()->route('user.edit',['id'=>$id])->with('error', 'Usuario ya existe');
         }
 
         if(!$request->password==null){

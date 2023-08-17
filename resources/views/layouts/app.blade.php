@@ -49,10 +49,20 @@
                                    
                             @else
                                 @if (auth()->user()->role_id == 1)
-                                    <li class="nav-item">
+                                    <li class="nav-item mr-2">
                                         <a class="nav-link" href="{{route('user.index')}}">Usuarios</a>
                                     </li>
+                                    <li class="nav-item mr-2">
+                                        <a class="nav-link" href="{{route('category.index')}}">Categorias</a>
+                                    </li>
+                                    <li class="nav-item mr-2">
+                                        <a class="nav-link" href="{{route('brand.index')}}">Marcas</a>
+                                    </li>
                                 @endif
+                                
+                                <li class="nav-item mr-2">
+                                    <a class="nav-link" href="{{route('customer.index')}}">Clientes</a>
+                                </li>
                                 <li class="nav-item dropdown">
                                    
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

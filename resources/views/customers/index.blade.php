@@ -6,12 +6,12 @@
 
 @section('head')
 <div class="container text-center pt-5">
-    <h1>Usuarios Registrados</h1>
+    <h1>Clientes Registrados</h1>
 
     <div class="row mt-5">
         <div class="col-10"></div>
         <div class="col-2 mb-2 text-center">
-            <a href="{{route('user.create')}}" class="btn btn-success">Nuevo Usuario</a>
+            <a href="{{route('customer.create')}}" class="btn btn-success">Nuevo Cliente</a>
         </div>
     </div>
 </div>
@@ -26,48 +26,26 @@
                 <th scope="col">Identificacion</th>
                 <th scope="col">Nombre Completo</th>
                 <th scope="col">Email</th>
-                <th scope="col">Rol</th>
-                <th scope="col">Estado</th>
+                <th scope="col">Telefono</th>
                 <th scope="col">Acciones</th>
               </tr>
             </thead>
             <tbody>
               
-                @foreach ($users as $user)
+                @foreach ($customers as $customer)
                 <tr>
-                    <td>{{$user->identificacion}}</td>
-                    <td>{{$user->name}} {{$user->lastName}}</td>
-                    <td>{{$user->email}}</td>
-                    <td>{{$user->role}}</td>
-                    @if($user->status == 1)
-                        <td>Activo</td>
-                    @else
-                        <td>Desactivado</td>
-                    @endif
+                    <td>{{$customer->identificacion}}</td>
+                    <td>{{$customer->name}} {{$customer->lastName}}</td>
+                    <td>{{$customer->email}}</td>
+                    <td>{{$customer->phone}}</td>
+                   
                     <td>
                         <div class="d-flex">
-                            <a href="{{route('user.view',['id'=>$user->id])}}" class="btn btn-outline-success"  ><i class="fa fa-eye" aria-hidden="true" title="Ver"></i></a>
+                            <a href="{{route('customer.view',['id'=>$customer->id])}}" class="btn btn-outline-success"  ><i class="fa fa-eye" aria-hidden="true" title="Ver"></i></a>
                             ||
-                            <a href="{{route('user.edit',['id'=>$user->id])}}" class="btn btn-outline-primary"><i class="fa fa-pencil-square-o" aria-hidden="true" title="Editar"></i></a> 
+                            <a href="{{route('customer.edit',['id'=>$customer->id])}}" class="btn btn-outline-primary"><i class="fa fa-pencil-square-o" aria-hidden="true" title="Editar"></i></a> 
                             ||
-                            <a href="#" class="btn btn-outline-danger" id="userDelete" onclick="deleteUser({{$user->id}})" ><i class="fa fa-trash" aria-hidden="true" title="Eliminar"></i></a>
-                            ||
-                            @if($user->status == 1)
-                            <form action="{{route('user.status',['id'=>$user->id])}}" method="POST" >
-                            @csrf
-                            @method('PUT')
-                                <input type="hidden" name="status" value="0">
-                                <button type="submit" class="btn btn-outline-danger"><i class="fa fa-ban" aria-hidden="true" title="Deshabilitar"></i></button>
-                            </form>
-                            @else
-                            <form action="{{route('user.status',['id'=>$user->id])}}" method="POST" >
-                            @csrf
-                            @method('PUT')
-                                <input type="hidden" name="status" value="1">
-                                <button type="submit" class="btn btn-outline-success"><i class="fa fa-check-circle" aria-hidden="true" title="Habilitar"></i></button>
-                            </form>
-                                
-                            @endif
+                            <a href="#" class="btn btn-outline-danger" id="customerDelete" onclick="deleteCustomer({{$customer->id}})" ><i class="fa fa-trash" aria-hidden="true" title="Eliminar"></i></a>
                         </div>
                     </td>
                 </tr> 
@@ -102,11 +80,11 @@
     </script>
 @endif
 <script>
-    function deleteUser(id){
-        var url = `/user/${id}/delete`;
+    function deleteCustomer(id){
+        var url = `/customer/${id}/delete`;
         Swal.fire({
                 title: 'Confirmar',
-                text: '¿Estás seguro de que desea eliminar el usuario?',
+                text: '¿Estás seguro de que desea eliminar el cliente?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -121,10 +99,10 @@
                         dataType: 'json',
                         success: function(response) {
                             if (response.success) {
-                                Swal.fire('Usuario eliminado', 'El usuario ha sido eliminado exitosamente.', 'success');
+                                Swal.fire('Cliente eliminado', 'El cliente ha sido eliminado exitosamente.', 'success');
                                 window.location.reload();
                             } else {
-                                Swal.fire('Error', 'No se pudo eliminar el usuario.', 'error');
+                                Swal.fire('Error', 'No se pudo eliminar el cliente.', 'error');
                             }
                         },
                         error: function() {
