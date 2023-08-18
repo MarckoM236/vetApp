@@ -3,6 +3,7 @@
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/customer/{id}/edit',[CustomerController::class,'edit'])->name('customer.edit');
     Route::put('/customer/{id}/update',[CustomerController::class,'update'])->name('customer.update');
     Route::get('/customer/{id}/view',[CustomerController::class,'show'])->name('customer.view');
+
+    //product
+    Route::get('/product/index',[ProductController::class,'index'])->name('product.index');
+    Route::get('/product/{id}/view',[ProductController::class,'show'])->name('product.view');
 });
 
 //users logged in with administrator role
@@ -62,6 +67,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/brand/{id}/delete',[BrandController::class,'destroy'])->name('brand.delete');
     Route::get('/brand/{id}/edit',[BrandController::class,'edit'])->name('brand.edit');
     Route::put('/brand/{id}/update',[BrandController::class,'update'])->name('brand.update');
+
+    //products
+    Route::get('/product/create',[ProductController::class,'create'])->name('product.create');
+    Route::post('/product/create',[ProductController::class,'store'])->name('product.store');
+    Route::get('/product/{id}/delete',[ProductController::class,'destroy'])->name('product.delete');
+    Route::get('/product/{id}/edit',[ProductController::class,'edit'])->name('product.edit');
+    Route::put('/product/{id}/update',[ProductController::class,'update'])->name('product.update');
+    Route::put('/product/modal',[ProductController::class,'startStock'])->name('product.stock');
+    
 });
 
 
