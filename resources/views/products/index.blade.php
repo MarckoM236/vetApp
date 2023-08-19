@@ -46,13 +46,16 @@
                     <td>
                         <div class="d-flex">
                             <a href="{{route('product.view',['id'=>$product->id])}}" class="btn btn-outline-success"  ><i class="fa fa-eye" aria-hidden="true" title="Ver"></i></a>
-                            ||
-                            <a href="{{route('product.edit',['id'=>$product->id])}}" class="btn btn-outline-primary"><i class="fa fa-pencil-square-o" aria-hidden="true" title="Editar"></i></a> 
-                            ||
-                            <a href="#" class="btn btn-outline-danger" id="productDelete" onclick="deleteObject({{$product->id}},'product','Producto eliminado exitosamente.','No se pudo eliminar el producto')" ><i class="fa fa-trash" aria-hidden="true" title="Eliminar"></i></a>
-                            @if($product->status == 0)
-                            ||
-                            <a href="#" class="btn btn-outline-warning"><i class="fa fa-play" aria-hidden="true" title="Iniciar stock" onclick="modalStock({{$product->id}})"></i></a> 
+                            
+                            @if (auth()->user()->role_id == 1)
+                                ||
+                                <a href="{{route('product.edit',['id'=>$product->id])}}" class="btn btn-outline-primary"><i class="fa fa-pencil-square-o" aria-hidden="true" title="Editar"></i></a> 
+                                ||
+                                <a href="#" class="btn btn-outline-danger" id="productDelete" onclick="deleteObject({{$product->id}},'product','Producto eliminado exitosamente.','No se pudo eliminar el producto')" ><i class="fa fa-trash" aria-hidden="true" title="Eliminar"></i></a>
+                                @if($product->status == 0)
+                                    ||
+                                    <a href="#" class="btn btn-outline-warning"><i class="fa fa-play" aria-hidden="true" title="Iniciar stock" onclick="modalStock({{$product->id}})"></i></a> 
+                                @endif
                             @endif
                         </div>
                     </td>
