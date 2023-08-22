@@ -4,6 +4,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,10 @@ Route::middleware(['auth'])->group(function () {
     //product
     Route::get('/product/index',[ProductController::class,'index'])->name('product.index');
     Route::get('/product/{id}/view',[ProductController::class,'show'])->name('product.view');
+
+    //provider
+    Route::get('/provider/index',[ProviderController::class,'index'])->name('provider.index');
+    Route::get('/provider/{id}/view',[ProviderController::class,'show'])->name('provider.view');
 });
 
 //users logged in with administrator role
@@ -75,7 +80,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/product/{id}/edit',[ProductController::class,'edit'])->name('product.edit');
     Route::put('/product/{id}/update',[ProductController::class,'update'])->name('product.update');
     Route::put('/product/modal',[ProductController::class,'startStock'])->name('product.stock');
-    
+
+    //providers
+    Route::get('/provider/create',[ProviderController::class,'create'])->name('provider.create');
+    Route::post('/provider/create',[ProviderController::class,'store'])->name('provider.store');
+    Route::get('/provider/{id}/delete',[ProviderController::class,'destroy'])->name('provider.delete');
+    Route::get('/provider/{id}/edit',[ProviderController::class,'edit'])->name('provider.edit');
+    Route::put('/provider/{id}/update',[ProviderController::class,'update'])->name('provider.update');    
 });
 
 
