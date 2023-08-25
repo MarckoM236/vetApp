@@ -54,7 +54,7 @@
                                 <a href="#" class="btn btn-outline-danger" id="productDelete" onclick="deleteObject({{$product->id}},'product','Producto eliminado exitosamente.','No se pudo eliminar el producto')" ><i class="fa fa-trash" aria-hidden="true" title="Eliminar"></i></a>
                                 @if($product->status == 0)
                                     ||
-                                    <a href="#" class="btn btn-outline-warning"><i class="fa fa-play" aria-hidden="true" title="Iniciar stock" onclick="modalStock({{$product->id}})"></i></a> 
+                                    <a href="#" class="btn btn-outline-warning" onclick="modalStock({{$product->id}})"><i class="fa fa-play" aria-hidden="true" title="Iniciar stock"></i></a> 
                                 @endif
                             @endif
                         </div>
