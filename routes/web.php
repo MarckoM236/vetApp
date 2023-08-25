@@ -5,7 +5,10 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
+use App\Http\Controllers\SaleController;
 use App\Http\Controllers\UserController;
+use App\Utils\Customer;
+use App\Utils\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -31,14 +34,20 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/customer/{id}/edit',[CustomerController::class,'edit'])->name('customer.edit');
     Route::put('/customer/{id}/update',[CustomerController::class,'update'])->name('customer.update');
     Route::get('/customer/{id}/view',[CustomerController::class,'show'])->name('customer.view');
+    Route::get('/customer/{identificacion}/get',[Customer::class,'getCustomerByID']);
 
     //product
     Route::get('/product/index',[ProductController::class,'index'])->name('product.index');
     Route::get('/product/{id}/view',[ProductController::class,'show'])->name('product.view');
+    Route::get('/product/{code}/get',[Product::class,'getProductByCode']);
 
     //provider
     Route::get('/provider/index',[ProviderController::class,'index'])->name('provider.index');
     Route::get('/provider/{id}/view',[ProviderController::class,'show'])->name('provider.view');
+
+    //sale
+    Route::get('/sale/create',[SaleController::class,'create'])->name('sale.create');
+    Route::post('/sale/create',[SaleController::class,'store'])->name('sale.store');
 });
 
 //users logged in with administrator role
