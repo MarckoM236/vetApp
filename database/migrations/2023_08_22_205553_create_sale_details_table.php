@@ -19,6 +19,7 @@ class CreateSaleDetailsTable extends Migration
             $table->unsignedBigInteger('product_id');
             $table->integer('quantity');
             $table->decimal('unit_price');
+            $table->decimal('total_price');
             $table->timestamps();
 
             $table->foreign('sale_id')->references('id')->on('sales');

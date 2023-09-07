@@ -19,6 +19,7 @@ class CreateSalesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('customer_id')->nullable();
             $table->decimal('total_amount',10,2);
+            $table->boolean('status')->default(1);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');
