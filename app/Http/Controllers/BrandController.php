@@ -42,20 +42,25 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'brand'=>['required', 'string', 'max:255']
-        ]);
+        try{
+            $request->validate([
+                'brand'=>['required', 'string', 'max:255']
+            ]);
 
-        $brand_sh = strtolower($request->brand);
-        $brand = $this->model::where('name', 'like', '%' . $brand_sh . '%')->first();
-        if ($brand) {
-            return redirect()->route('brand.create')->with('error', 'Ya existe la marca');
+            $brand_sh = strtolower($request->brand);
+            $brand = $this->model::where('name', 'like', '%' . $brand_sh . '%')->first();
+            if ($brand) {
+                return redirect()->route('brand.create')->with('error', 'Ya existe la marca');
+            }
+
+            $brand_qr=$this->model;
+            $brand_qr->name = $request->brand;
+            $brand_qr->save();
+            return redirect()->route('brand.index')->with('success', 'Marca registrada exitoisamente');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
         }
-
-        $brand_qr=$this->model;
-        $brand_qr->name = $request->brand;
-        $brand_qr->save();
-        return redirect()->route('brand.index')->with('success', 'Marca registrada exitoisamente');
     }
 
     /**
@@ -83,23 +88,28 @@ class BrandController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'brand'=>['required', 'string', 'max:255']
-        ]);
-        $brand_qr = $this->model::find($id);
-        if (!$brand_qr) {
-            return redirect()->route('brand.index')->with('error', 'Marca No encontrada');
-        }
+        try{
+            $request->validate([
+                'brand'=>['required', 'string', 'max:255']
+            ]);
+            $brand_qr = $this->model::find($id);
+            if (!$brand_qr) {
+                return redirect()->route('brand.index')->with('error', 'Marca No encontrada');
+            }
 
-        $brand_sh = strtolower($request->brand);
-        $brand = $this->model::where('name', 'like', '%' . $brand_sh . '%')->where('id','!=', $id)->first();
-        if ($brand) {
-            return redirect()->route('brand.edit',['id'=>$id])->with('error', 'Ya existe la marca');
-        }
+            $brand_sh = strtolower($request->brand);
+            $brand = $this->model::where('name', 'like', '%' . $brand_sh . '%')->where('id','!=', $id)->first();
+            if ($brand) {
+                return redirect()->route('brand.edit',['id'=>$id])->with('error', 'Ya existe la marca');
+            }
 
-        $brand_qr->name = $request->brand;
-        $brand_qr->save();
-        return redirect()->route('brand.index')->with('success', 'Marca registrada exitoisamente');
+            $brand_qr->name = $request->brand;
+            $brand_qr->save();
+            return redirect()->route('brand.index')->with('success', 'Marca actualizada exitosamente');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
+        }
     }
 
     /**
@@ -110,13 +120,18 @@ class BrandController extends Controller
      */
     public function destroy($id)
     {
-        $brand = $this->model::find($id);
-        if (!$brand) {
-            return response()->json(['success' => false, 'message' => 'Marca no encontrada.']);
-        }
+        try{
+            $brand = $this->model::find($id);
+            if (!$brand) {
+                return response()->json(['success' => false, 'message' => 'Marca no encontrada.']);
+            }
+            
+            $brand->delete();
         
-        $brand->delete();
-    
-        return response()->json(['success' => true, 'message' => 'La Marca ha sido eliminada exitosamente.']);
+            return response()->json(['success' => true, 'message' => 'La Marca ha sido eliminada exitosamente.']);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'No se pudo eliminar la marca']);
+        }
     }
 }

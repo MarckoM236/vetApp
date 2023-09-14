@@ -42,36 +42,41 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'identificacion' => ['required', 'numeric', 'min:7','unique:customers'],
-            'name' => ['required', 'string', 'max:255'],
-            'lastName' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'address' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'numeric', 'min:7'],
-            'city' => ['nullable', 'string', 'max:255'],
-            'neighborhood' => ['nullable','string', 'max:255']
-        ]);
+        try{
+            $request->validate([
+                'identificacion' => ['required', 'numeric', 'min:7','unique:customers'],
+                'name' => ['required', 'string', 'max:255'],
+                'lastName' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255'],
+                'address' => ['nullable', 'string', 'max:255'],
+                'phone' => ['nullable', 'numeric', 'min:7'],
+                'city' => ['nullable', 'string', 'max:255'],
+                'neighborhood' => ['nullable','string', 'max:255']
+            ]);
 
-        $customerExist = $this->model::where('customers.identificacion',$request->identificacion)
-        ->exists();
-        if($customerExist){
-            return redirect()->route('customer.create')->with('error', 'Cliente ya existe');
-        }
-        else{
-            $customer = $this->model;
-            $customer->identificacion = $request->identificacion;
-            $customer->name = $request->name;
-            $customer->lastName = $request->lastName;
-            $customer->email = $request->email;
-            $customer->address = $request->address;
-            $customer->phone = $request->phone;
-            $customer->city = $request->city;
-            $customer->neighborhood = $request->neighborhood;
-            
-            $customer->save();
+            $customerExist = $this->model::where('customers.identificacion',$request->identificacion)
+            ->exists();
+            if($customerExist){
+                return redirect()->route('customer.create')->with('error', 'Cliente ya existe');
+            }
+            else{
+                $customer = $this->model;
+                $customer->identificacion = $request->identificacion;
+                $customer->name = $request->name;
+                $customer->lastName = $request->lastName;
+                $customer->email = $request->email;
+                $customer->address = $request->address;
+                $customer->phone = $request->phone;
+                $customer->city = $request->city;
+                $customer->neighborhood = $request->neighborhood;
+                
+                $customer->save();
 
-            return redirect()->route('customer.index')->with('success', 'Cliente creado exitosamente');
+                return redirect()->route('customer.index')->with('success', 'Cliente creado exitosamente');
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
         }
     }
 
@@ -116,41 +121,46 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'identificacion' => ['required', 'numeric', 'min:7'],
-            'name' => ['required', 'string', 'max:255'],
-            'lastName' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'address' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'numeric', 'min:7'],
-            'city' => ['nullable', 'string', 'max:255'],
-            'neighborhood' => ['nullable','string', 'max:255']
-        ]);
-        $customer = $this->model::find($id);
-        if (!$customer) {
-            return redirect()->route('customer.index')->with('error', 'Cliente no encontrado');
-        }
+        try{
+            $request->validate([
+                'identificacion' => ['required', 'numeric', 'min:7'],
+                'name' => ['required', 'string', 'max:255'],
+                'lastName' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255'],
+                'address' => ['nullable', 'string', 'max:255'],
+                'phone' => ['nullable', 'numeric', 'min:7'],
+                'city' => ['nullable', 'string', 'max:255'],
+                'neighborhood' => ['nullable','string', 'max:255']
+            ]);
+            $customer = $this->model::find($id);
+            if (!$customer) {
+                return redirect()->route('customer.index')->with('error', 'Cliente no encontrado');
+            }
 
-        $customerExist = $this->model::where('customers.identificacion',$request->identificacion)
-        ->where('id','!=',$id)
-        ->exists();
+            $customerExist = $this->model::where('customers.identificacion',$request->identificacion)
+            ->where('id','!=',$id)
+            ->exists();
 
-        if($customerExist){
-            return redirect()->route('customer.edit',['id'=>$id])->with('error', 'Cliente ya existe');
-        }
-        else{
-            $customer->identificacion = $request->identificacion;
-            $customer->name = $request->name;
-            $customer->lastName = $request->lastName;
-            $customer->email = $request->email;
-            $customer->address = $request->address;
-            $customer->phone = $request->phone;
-            $customer->city = $request->city;
-            $customer->neighborhood = $request->neighborhood;
-            
-            $customer->save();
+            if($customerExist){
+                return redirect()->route('customer.edit',['id'=>$id])->with('error', 'Cliente ya existe');
+            }
+            else{
+                $customer->identificacion = $request->identificacion;
+                $customer->name = $request->name;
+                $customer->lastName = $request->lastName;
+                $customer->email = $request->email;
+                $customer->address = $request->address;
+                $customer->phone = $request->phone;
+                $customer->city = $request->city;
+                $customer->neighborhood = $request->neighborhood;
+                
+                $customer->save();
 
-            return redirect()->route('customer.index')->with('success', 'Cliente actualizado exitosamente');
+                return redirect()->route('customer.index')->with('success', 'Cliente actualizado exitosamente');
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
         }
     }
 
@@ -162,13 +172,17 @@ class CustomerController extends Controller
      */
     public function destroy($id)
     {
-        $customer = $this->model::find($id);
-        if (!$customer) {
-            return response()->json(['success' => false, 'message' => 'Cliente no encontrado.']);
-        }
+        try{
+            $customer = $this->model::find($id);
+            if (!$customer) {
+                return response()->json(['success' => false, 'message' => 'Cliente no encontrado.']);
+            }
 
-        $customer->delete();
-    
-        return response()->json(['success' => true, 'message' => 'El Cliente ha sido eliminado correctamente.']);
+            $customer->delete();
+        
+            return response()->json(['success' => true, 'message' => 'El Cliente ha sido eliminado correctamente.']);
+        }catch(\Exception $e){
+            return response()->json(['success'=>false,'message'=>'Error al intentar eliminar el cliente']);
+        }
     }
 }

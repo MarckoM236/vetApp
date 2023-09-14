@@ -101,8 +101,7 @@
                 <option value="" selected>Seleccione un rol</option>
                 <option value="1">Administrador</option>
                 <option value="2">Vendedor</option>
-            </select>
-            
+            </select>    
         </div>
 
         <div class="text-center form-group mt-3 mb-3">

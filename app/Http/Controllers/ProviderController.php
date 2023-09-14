@@ -43,32 +43,36 @@ class ProviderController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nit'=>['required', 'numeric', 'min:7','unique:providers'],
-            'name'=>['required', 'string', 'max:255'],
-            'contact'=>['required', 'string', 'max:255'],
-            'email'=>['required', 'string', 'email', 'max:255'],
-            'phone'=>['required', 'numeric', 'min:7']
-        ]);
+        try{
+            $request->validate([
+                'nit'=>['required', 'numeric', 'min:7','unique:providers'],
+                'name'=>['required', 'string', 'max:255'],
+                'contact'=>['required', 'string', 'max:255'],
+                'email'=>['required', 'string', 'email', 'max:255'],
+                'phone'=>['required', 'numeric', 'min:7']
+            ]);
 
-        $providerExist = $this->model::where('providers.nit',$request->nit)
-        ->exists();
-        if($providerExist){
-            return redirect()->route('provider.create')->with('error', 'Proveedor ya existe');
+            $providerExist = $this->model::where('providers.nit',$request->nit)
+            ->exists();
+            if($providerExist){
+                return redirect()->route('provider.create')->with('error', 'Proveedor ya existe');
+            }
+            else{
+                $provider = $this->model;
+                $provider->nit = $request->nit;
+                $provider->name = $request->name;
+                $provider->contact_name = $request->contact;
+                $provider->email = $request->email;
+                $provider->phone = $request->phone;
+
+                $provider->save();
+
+                return redirect()->route('provider.index')->with('success', 'Proveedor creado exitosamente');
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
         }
-        else{
-            $provider = $this->model;
-            $provider->nit = $request->nit;
-            $provider->name = $request->name;
-            $provider->contact_name = $request->contact;
-            $provider->email = $request->email;
-            $provider->phone = $request->phone;
-
-            $provider->save();
-
-            return redirect()->route('provider.index')->with('success', 'Proveedor creado exitosamente');
-        }
-
     }
 
     /**
@@ -112,26 +116,27 @@ class ProviderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'nit'=>['required', 'numeric', 'min:7'],
-            'name'=>['required', 'string', 'max:255'],
-            'contact'=>['required', 'string', 'max:255'],
-            'email'=>['required', 'string', 'email', 'max:255'],
-            'phone'=>['required', 'numeric', 'min:7']
-        ]);
+        try{
+            $request->validate([
+                'nit'=>['required', 'numeric', 'min:7'],
+                'name'=>['required', 'string', 'max:255'],
+                'contact'=>['required', 'string', 'max:255'],
+                'email'=>['required', 'string', 'email', 'max:255'],
+                'phone'=>['required', 'numeric', 'min:7']
+            ]);
 
-        $provider = $this->model::find($id);
-        if (!$provider) {
-            return response()->json(['success' => false, 'message' => 'Proveedor no encontrado.']);
-        }
+            $provider = $this->model::find($id);
+            if (!$provider) {
+                return response()->json(['success' => false, 'message' => 'Proveedor no encontrado.']);
+            }
 
-        $providerExist = $this->model::where('providers.nit',$request->nit)
-        ->where('providers.id','!=',$id)
-        ->exists();
-        if($providerExist){
-            return redirect()->route('provider.edit',['id'=>$id])->with('error', 'el NIT del Proveedor ya existe');
-        }
-        
+            $providerExist = $this->model::where('providers.nit',$request->nit)
+            ->where('providers.id','!=',$id)
+            ->exists();
+            if($providerExist){
+                return redirect()->route('provider.edit',['id'=>$id])->with('error', 'el NIT del Proveedor ya existe');
+            }
+            
             $provider->nit = $request->nit;
             $provider->name = $request->name;
             $provider->contact_name = $request->contact;
@@ -141,7 +146,10 @@ class ProviderController extends Controller
             $provider->save();
 
             return redirect()->route('provider.index')->with('success', 'Proveedor actualizado exitosamente');
-        
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
+        }
     }
 
     /**
@@ -152,13 +160,17 @@ class ProviderController extends Controller
      */
     public function destroy($id)
     {
-        $provider = $this->model::find($id);
-        if (!$provider) {
-            return response()->json(['success' => false, 'message' => 'Proveedor no encontrado.']);
-        }
+        try{
+            $provider = $this->model::find($id);
+            if (!$provider) {
+                return response()->json(['success' => false, 'message' => 'Proveedor no encontrado.']);
+            }
 
-        $provider->delete();
-    
-        return response()->json(['success' => true, 'message' => 'El proveedor ha sido eliminado exitosamente.']);
+            $provider->delete();
+        
+            return response()->json(['success' => true, 'message' => 'El proveedor ha sido eliminado exitosamente.']);
+        }catch(\Exception $e){
+            return response()->json(['success'=>false,'message'=>'Error al intentar eliminar el proveedor']);
+        }
     }
 }

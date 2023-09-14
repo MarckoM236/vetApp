@@ -3,6 +3,7 @@
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InventoryAdjustmentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\SaleController;
@@ -101,6 +102,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
     
     //sales
     Route::get('/sale/{id}/cancel',[SaleController::class,'cancelSale'])->name('sale.cancel');
+
+    //Inventory_adjustments
+    Route::get('adjustment/index',[InventoryAdjustmentController::class,'index'])->name('adjustment.index');
+    Route::get('adjustment/create',[InventoryAdjustmentController::class,'create'])->name('adjustment.create');
+    Route::post('adjustment/create',[InventoryAdjustmentController::class,'store'])->name('adjustment.store');
+    Route::get('adjustment/{id}/view',[InventoryAdjustmentController::class,'show'])->name('adjustment.show');
 });
 
 
