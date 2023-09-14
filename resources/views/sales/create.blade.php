@@ -242,11 +242,16 @@
                 dataType: 'json',
                 delay: 250,
                 processResults: function(data) {
-                    return {
+                    if (data.success == false) {
+                        return { results: [{text: data.message}] };
+                    }
+                    else{
+                        return {
                         results: data.map(function(item) {
                             return { id: item.id, text: item.name, image: item.photo, price:item.price, code:item.code };
                         })
                     };
+                    }      
                 },
                 cache: true
             },
@@ -291,49 +296,52 @@
 
         //Agregar producto a la tabla
         function addProduct(product,up=null){
-            var img = null;
-            var val = null;
-            var total = null;
-            if(up==1){
-                img = product.image;
-                val = product.quantity;
-                total= product.totalProduct;
-            }
-            else{
-                img = `{{ asset('storage/${product.image}') }}`;
-                val = 1;
-                total= product.price;
-            }
-            
-            var newRow = `
-                <tr id="${product.id}">
-                    <td style="display:none">${product.id}</td>
-                    <td><img class="image"  src="${img}" alt="${product.code}" class="product-image" style="width:40px;height:40px;"></td>
-                    <td>${product.code}</td>
-                    <td>${product.text}</td>
-                    <td>${product.price}</td>
-                    <td><input type="number" class="quantity" id="quantity-${product.id}" style="width:60px;" value="${val}"></td>
-                    <td class="totalProduct" id="${product.id}">${total}</td>
-                    <td><button type="button" id="delete-${product.id}">delete</button></td>
-                </tr>
-                `;
-                $('#table-product tbody').append(newRow);
-                fullSale();
-            
-                // Actualizar el precio total en función de la cantidad
-                $('#quantity-'+product.id).on('input', function() {
-                var quantity = parseInt($(this).val());
-                var price = parseFloat(product.price);
-                var total = quantity * price;
-                $(this).closest('tr').find('#'+product.id).text(total.toFixed(2));
-                fullSale();
-                });
+            if (product.id) {
+                var img = null;
+                var val = null;
+                var total = null;
+                if(up==1){
+                    img = product.image;
+                    val = product.quantity;
+                    total= product.totalProduct;
+                }
+                else{
+                    img = `{{ asset('storage/${product.image}') }}`;
+                    val = 1;
+                    total= product.price;
+                }
+                
+                var newRow = `
+                    <tr id="${product.id}">
+                        <td style="display:none">${product.id}</td>
+                        <td><img class="image"  src="${img}" alt="${product.code}" class="product-image" style="width:40px;height:40px;"></td>
+                        <td>${product.code}</td>
+                        <td>${product.text}</td>
+                        <td>${product.price}</td>
+                        <td><input type="number" class="quantity" id="quantity-${product.id}" style="width:60px;" value="${val}"></td>
+                        <td class="totalProduct" id="${product.id}">${total}</td>
+                        <td><button type="button" id="delete-${product.id}">delete</button></td>
+                    </tr>
+                    `;
+                    $('#table-product tbody').append(newRow);
+                    fullSale();
+                
+                    // Actualizar el precio total en función de la cantidad
+                    $('#quantity-'+product.id).on('input', function() {
+                    var quantity = parseInt($(this).val());
+                    var price = parseFloat(product.price);
+                    var total = quantity * price;
+                    $(this).closest('tr').find('#'+product.id).text(total.toFixed(2));
+                    fullSale();
+                    });
 
-                // Manejar el clic en el botón de eliminar
-                $('#delete-'+product.id).off('click').on('click', function() {
-                $(this).closest('tr').remove();
-                fullSale();
-                });
+                    // Manejar el clic en el botón de eliminar
+                    $('#delete-'+product.id).off('click').on('click', function() {
+                    $(this).closest('tr').remove();
+                    fullSale();
+                    });
+                }
+            
         }
 
         //Totalizar la venta

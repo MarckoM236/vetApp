@@ -52,11 +52,17 @@
                                     <li class="nav-item mr-2">
                                         <a class="nav-link" href="{{route('user.index')}}">Usuarios</a>
                                     </li>
-                                    <li class="nav-item mr-2">
-                                        <a class="nav-link" href="{{route('category.index')}}">Categorias</a>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                          Parametros
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                          <li><a class="dropdown-item" href="{{route('category.index')}}">Categorias</a></li>
+                                          <li><a class="dropdown-item" href="{{route('brand.index')}}">Marcas</a></li>
+                                        </ul>
                                     </li>
                                     <li class="nav-item mr-2">
-                                        <a class="nav-link" href="{{route('brand.index')}}">Marcas</a>
+                                        <a class="nav-link" href="{{route('adjustment.index')}}">Ajustes</a>
                                     </li>
                                 @endif
                                 
@@ -68,6 +74,9 @@
                                 </li>
                                 <li class="nav-item mr-2">
                                     <a class="nav-link" href="{{route('provider.index')}}">Proveedores</a>
+                                </li>
+                                <li class="nav-item mr-2">
+                                    <a class="nav-link" href="{{route('sale.index')}}">Ventas</a>
                                 </li>
                                 <li class="nav-item dropdown">
                                    

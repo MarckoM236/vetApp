@@ -3,6 +3,7 @@
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\InventoryAdjustmentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\SaleController;
@@ -45,9 +46,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/provider/index',[ProviderController::class,'index'])->name('provider.index');
     Route::get('/provider/{id}/view',[ProviderController::class,'show'])->name('provider.view');
 
-    //sale
+    //sales
     Route::get('/sale/create',[SaleController::class,'create'])->name('sale.create');
     Route::post('/sale/create',[SaleController::class,'store'])->name('sale.store');
+    Route::get('/sale/index',[SaleController::class,'index'])->name('sale.index');
+    Route::get('/sale/{id}/view',[SaleController::class,'show'])->name('sale.view');
 });
 
 //users logged in with administrator role
@@ -95,7 +98,16 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/provider/create',[ProviderController::class,'store'])->name('provider.store');
     Route::get('/provider/{id}/delete',[ProviderController::class,'destroy'])->name('provider.delete');
     Route::get('/provider/{id}/edit',[ProviderController::class,'edit'])->name('provider.edit');
-    Route::put('/provider/{id}/update',[ProviderController::class,'update'])->name('provider.update');    
+    Route::put('/provider/{id}/update',[ProviderController::class,'update'])->name('provider.update');   
+    
+    //sales
+    Route::get('/sale/{id}/cancel',[SaleController::class,'cancelSale'])->name('sale.cancel');
+
+    //Inventory_adjustments
+    Route::get('adjustment/index',[InventoryAdjustmentController::class,'index'])->name('adjustment.index');
+    Route::get('adjustment/create',[InventoryAdjustmentController::class,'create'])->name('adjustment.create');
+    Route::post('adjustment/create',[InventoryAdjustmentController::class,'store'])->name('adjustment.store');
+    Route::get('adjustment/{id}/view',[InventoryAdjustmentController::class,'show'])->name('adjustment.show');
 });
 
 

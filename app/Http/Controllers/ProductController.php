@@ -54,39 +54,44 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'code'=>['required', 'string', 'max:255'],
-            'name'=>['required', 'string', 'max:255'],
-            'description'=>['required', 'string', 'max:255'],
-            'category'=>['required'],
-            'brand'=>['required']
-        ]);
+        try{
+            $request->validate([
+                'code'=>['required', 'string', 'max:255'],
+                'name'=>['required', 'string', 'max:255'],
+                'description'=>['required', 'string', 'max:255'],
+                'category'=>['required'],
+                'brand'=>['required']
+            ]);
 
-        $productExist = $this->model::where('products.code',$request->code)
-        ->exists();
-        if($productExist){
-            return redirect()->route('product.create')->with('error', 'El producto ya existe');
-        }
-        else{
-            $product = $this->model;
-            $product->code = $request->code;
-            $product->name = $request->name;
-            $product->description = $request->description;
-            $product->category_id = $request->category;
-            $product->brand_id = $request->brand;
-            
-            if ($request->hasFile('photo')) {
-
-                $archivo = $request->file('photo');
-                $nombre = $archivo->getClientOriginalName();
-                $renombrado = time() . '_' . $nombre;
-                $ruta = $archivo->storeAs('prducts', $renombrado, 'public');
-                
-                $product->photo = $ruta;
+            $productExist = $this->model::where('products.code',$request->code)
+            ->exists();
+            if($productExist){
+                return redirect()->route('product.create')->with('error', 'El producto ya existe');
             }
-            $product->save();
+            else{
+                $product = $this->model;
+                $product->code = $request->code;
+                $product->name = $request->name;
+                $product->description = $request->description;
+                $product->category_id = $request->category;
+                $product->brand_id = $request->brand;
+                
+                if ($request->hasFile('photo')) {
 
-            return redirect()->route('product.index')->with('success', 'Producto creado exitosamente');
+                    $archivo = $request->file('photo');
+                    $nombre = $archivo->getClientOriginalName();
+                    $renombrado = time() . '_' . $nombre;
+                    $ruta = $archivo->storeAs('prducts', $renombrado, 'public');
+                    
+                    $product->photo = $ruta;
+                }
+                $product->save();
+
+                return redirect()->route('product.index')->with('success', 'Producto creado exitosamente');
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
         }
     }
 
@@ -143,53 +148,57 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'code'=>['required', 'string', 'max:255'],
-            'name'=>['required', 'string', 'max:255'],
-            'description'=>['required', 'string', 'max:255'],
-            'category'=>['required'],
-            'brand'=>['required']
-        ]);
+        try{
+            $request->validate([
+                'code'=>['required', 'string', 'max:255'],
+                'name'=>['required', 'string', 'max:255'],
+                'description'=>['required', 'string', 'max:255'],
+                'category'=>['required'],
+                'brand'=>['required']
+            ]);
 
-        $product = $this->model::find($id);
-        if (!$product) {
-            return redirect()->route('product.index')->with('error', 'Producto no encontrado');
-        }
-
-        $productExist = $this->model::where('products.code',$request->code)
-        ->where('products.id','!=',$id)
-        ->exists();
-        if($productExist){
-            return redirect()->route('product.edit',['id'=>$id])->with('error', 'El producto ya existe');
-        }
-        
-        $product->code = $request->code;
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->category_id = $request->category;
-        $product->brand_id = $request->brand;
-        
-        if ($request->hasFile('photo')) {
-            
-            $rutaArchivo = 'public/'.$product->photo;
-            $rutaArchivo = str_replace('/', '\\', $rutaArchivo);
-    
-            if (Storage::exists($rutaArchivo)) {
-                Storage::delete($rutaArchivo);
+            $product = $this->model::find($id);
+            if (!$product) {
+                return redirect()->route('product.index')->with('error', 'Producto no encontrado');
             }
-    
-            // Subir el nuevo archivo
-            $archivo = $request->file('photo');
-            $nombre = $archivo->getClientOriginalName();
-            $renombrado = time() . '_' . $nombre;
-            $ruta = $archivo->storeAs('product', $renombrado, 'public');
-            
-            $product -> photo = $ruta;
-        }
-        $product->save();
 
-        return redirect()->route('product.index')->with('success', 'Producto actualizado exitosamente');
+            $productExist = $this->model::where('products.code',$request->code)
+            ->where('products.id','!=',$id)
+            ->exists();
+            if($productExist){
+                return redirect()->route('product.edit',['id'=>$id])->with('error', 'El producto ya existe');
+            }
+            
+            $product->code = $request->code;
+            $product->name = $request->name;
+            $product->description = $request->description;
+            $product->category_id = $request->category;
+            $product->brand_id = $request->brand;
+            
+            if ($request->hasFile('photo')) {
+                
+                $rutaArchivo = 'public/'.$product->photo;
+                $rutaArchivo = str_replace('/', '\\', $rutaArchivo);
         
+                if (Storage::exists($rutaArchivo)) {
+                    Storage::delete($rutaArchivo);
+                }
+        
+                // Subir el nuevo archivo
+                $archivo = $request->file('photo');
+                $nombre = $archivo->getClientOriginalName();
+                $renombrado = time() . '_' . $nombre;
+                $ruta = $archivo->storeAs('product', $renombrado, 'public');
+                
+                $product -> photo = $ruta;
+            }
+            $product->save();
+
+            return redirect()->route('product.index')->with('success', 'Producto actualizado exitosamente');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()->withErrors($e->validator)->withInput();
+        }   
     }
 
     /**
@@ -200,21 +209,26 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        $product = $this->model::find($id);
-        if (!$product) {
-            return response()->json(['success' => false, 'message' => 'Producto no encontrado.']);
-        }
+        try{
+            $product = $this->model::find($id);
+            if (!$product) {
+                return response()->json(['success' => false, 'message' => 'Producto no encontrado.']);
+            }
 
-        $rutaArchivo = 'public/'.$product->photo;
-        $rutaArchivo = str_replace('/', '\\', $rutaArchivo);
+            $rutaArchivo = 'public/'.$product->photo;
+            $rutaArchivo = str_replace('/', '\\', $rutaArchivo);
+            
+            if (Storage::exists($rutaArchivo)) {
+                Storage::delete($rutaArchivo);
+            }
+            
+            $product->delete();
         
-        if (Storage::exists($rutaArchivo)) {
-            Storage::delete($rutaArchivo);
+            return response()->json(['success' => true, 'message' => 'El producto se ha eliminado exitosamente.']);
+        
+        }catch(\Exception $e){
+            return response()->json(['success'=>false,'message'=>'Error al intentar eliminar el producto']);
         }
-        
-        $product->delete();
-    
-        return response()->json(['success' => true, 'message' => 'El producto se ha eliminado exitosamente.']);
     }
 
     public function startStock(Request $request){
