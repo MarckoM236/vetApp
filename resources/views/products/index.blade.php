@@ -10,7 +10,7 @@
 
     <div class="row mt-5">
         <div class="col-10 d-flex justify-content-between align-items-center">
-            <a href="" class="btn btn-success">Codigos de Barras</a>
+            <a href="{{route('barcode.index')}}" class="btn btn-success">Codigos de Barras</a>
         </div>
         <div class="col-2 mb-2 text-center">
             <a href="{{route('product.create')}}" class="btn btn-success">Nuevo Producto</a>

@@ -3,6 +3,7 @@ namespace App\Utils;
 
 use App\Models\Product as ModelsProduct;
 use Illuminate\Http\Request;
+use Milon\Barcode\DNS1D;
 
 class Product{
     //obtain products by code, it is used for both sales and stock adjustments, the latter sends parameter as true
@@ -43,5 +44,25 @@ class Product{
             $product->stock_quantity = $newStock;
             $product->save();
         }
+    }
+
+    public static function getProducts($code){
+        try {
+            $products = ModelsProduct::select('name','code');
+            if(!empty($code)){
+                $products->where('code',$code);
+            }
+            $products = $products->get();
+
+            if($products->isEmpty()){
+                return response()->json(['success'=>false,'message'=>'No se encontro ningun producto']);
+            }
+
+            return response()->json(['products'=>$products]);
+
+         } catch (\Exception $e) {
+            return response()->json(['success'=>false,'message'=>'No se pudo procesar la solicitud']);
+        } 
+        
     }
 }
