@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BarcodeController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
@@ -41,6 +42,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/product/index',[ProductController::class,'index'])->name('product.index');
     Route::get('/product/{id}/view',[ProductController::class,'show'])->name('product.view');
     Route::get('/product/{code}/get',[Product::class,'getProductByCode']);
+    Route::post('/product/barcode',[BarcodeController::class,'store'])->name('barcode.get');
+    Route::get('/barcode/index',[BarcodeController::class,'index'])->name('barcode.index');
+    Route::post('/barcode/pdf',[BarcodeController::class,'pdf'])->name('barcode.pdf');
 
     //provider
     Route::get('/provider/index',[ProviderController::class,'index'])->name('provider.index');
