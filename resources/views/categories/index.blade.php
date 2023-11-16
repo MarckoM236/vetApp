@@ -37,7 +37,7 @@
                         <div class="d-flex">
                             <a href="{{route('category.edit',['id'=>$category->id])}}" class="btn btn-outline-primary"><i class="fa fa-pencil-square-o" aria-hidden="true" title="Editar"></i></a> 
                             ||
-                            <a href="#" class="btn btn-outline-danger" id="userDelete" onclick="deleteCategory({{$category->id}})" ><i class="fa fa-trash" aria-hidden="true" title="Eliminar"></i></a>
+                            <a href="#" class="btn btn-outline-danger" id="userDelete" onclick="deleteObject({{$category->id}},'category','La categoria ha sido eliminada exitosamente.','No se pudo eliminar la categoria')" ><i class="fa fa-trash" aria-hidden="true" title="Eliminar"></i></a>
                         </div>
                     </td>
                 </tr> 
@@ -71,38 +71,5 @@
         )
     </script>
 @endif
-<script>
-    function deleteCategory(id){
-        var url = `/category/${id}/delete`;
-        Swal.fire({
-                title: 'Confirmar',
-                text: '¿Estás seguro de que desea eliminar esta categoria?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire('Categoria eliminada', 'La categoria ha sido eliminada exitosamente.', 'success');
-                                window.location.reload();
-                            } else {
-                                Swal.fire('Error', 'No se pudo eliminar la categoria.', 'error');
-                            }
-                        },
-                        error: function() {
-                            Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
-                        }
-                    });
-                }
-            });
-    }
-</script>
+<script src="{{ mix('/js/functions.js') }}"></script>
 @endsection

@@ -90,7 +90,7 @@
         )
     </script>
 @endif
-<script src="{{ asset('js/functions.js') }}"></script>
+<script src="{{ mix('js/functions.js') }}"></script>
 <script>
     function modalStock(id){
         $('#id_product').val(id); 

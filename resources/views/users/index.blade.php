@@ -50,7 +50,7 @@
                             ||
                             <a href="{{route('user.edit',['id'=>$user->id])}}" class="btn btn-outline-primary"><i class="fa fa-pencil-square-o" aria-hidden="true" title="Editar"></i></a> 
                             ||
-                            <a href="#" class="btn btn-outline-danger" id="userDelete" onclick="deleteUser({{$user->id}})" ><i class="fa fa-trash" aria-hidden="true" title="Eliminar"></i></a>
+                            <a href="#" class="btn btn-outline-danger" id="userDelete" onclick="deleteObject({{$user->id}},'user','El usuario ha sido eliminado exitosamente.','No se pudo eliminar el usuario.')" ><i class="fa fa-trash" aria-hidden="true" title="Eliminar"></i></a>
                             ||
                             @if($user->status == 1)
                             <form action="{{route('user.status',['id'=>$user->id])}}" method="POST" >
@@ -101,38 +101,5 @@
         )
     </script>
 @endif
-<script>
-    function deleteUser(id){
-        var url = `/user/${id}/delete`;
-        Swal.fire({
-                title: 'Confirmar',
-                text: '¿Estás seguro de que desea eliminar el usuario?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: url,
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire('Usuario eliminado', 'El usuario ha sido eliminado exitosamente.', 'success');
-                                window.location.reload();
-                            } else {
-                                Swal.fire('Error', 'No se pudo eliminar el usuario.', 'error');
-                            }
-                        },
-                        error: function() {
-                            Swal.fire('Error', 'Ocurrió un error al procesar la solicitud.', 'error');
-                        }
-                    });
-                }
-            });
-    }
-</script>
+<script src="{{ mix('js/functions.js') }}"></script>
 @endsection

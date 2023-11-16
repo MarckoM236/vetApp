@@ -1,4 +1,5 @@
-function deleteObject(id,route,success,error){
+
+global.deleteObject = function(id,route,success,error){
     var url = `/${route}/${id}/delete`;
     Swal.fire({
             title: 'Confirmar',
@@ -29,4 +30,4 @@ function deleteObject(id,route,success,error){
                 });
             }
         });
-}
+};

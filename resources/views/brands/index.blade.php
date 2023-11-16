@@ -71,5 +71,5 @@
         )
     </script>
 @endif
-<script type="text/javascript" src="{{ asset('js/functions.js') }}"></script>
+<script src="{{ mix('js/functions.js') }}"></script>
 @endsection
