@@ -39,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/customer/{identificacion}/get',[Customer::class,'getCustomerByID']);
 
     //product
-    Route::get('/product/index',[ProductController::class,'index'])->name('product.index');
+    Route::get('/product/index/{stock?}',[ProductController::class,'index'])->name('product.index');
     Route::get('/product/{id}/view',[ProductController::class,'show'])->name('product.view');
     Route::get('/product/{code}/get',[Product::class,'getProductByCode']);
     Route::post('/product/barcode',[BarcodeController::class,'store'])->name('barcode.get');
@@ -59,10 +59,6 @@ Route::middleware(['auth'])->group(function () {
 
 //users logged in with administrator role
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/', function () {
-        return redirect()->route('admin');
-    });
-    Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin');
     //users
     Route::get('/user/create',[UserController::class,'create'])->name('user.create');
     Route::post('/user/create',[UserController::class,'store'])->name('user.store');

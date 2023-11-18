@@ -24,7 +24,7 @@
         <header>
             <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
                 <div class="container">
-                    <a class="navbar-brand" href="{{ url('/') }}">
+                    <a class="navbar-brand" href="{{ route('home') }}">
                         {{ config('app.name', 'Laravel') }}
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
@@ -64,8 +64,14 @@
                                     <li class="nav-item mr-2">
                                         <a class="nav-link" href="{{route('adjustment.index')}}">Ajustes</a>
                                     </li>
+                                    <li class="nav-item mr-2">
+                                        <a class="nav-link" href="#">Compras</a>
+                                    </li>
                                 @endif
                                 
+                                <li class="nav-item mr-2">
+                                    <a class="nav-link" href="{{route('home')}}">Dashboard</a>
+                                </li>
                                 <li class="nav-item mr-2">
                                     <a class="nav-link" href="{{route('customer.index')}}">Clientes</a>
                                 </li>

@@ -64,7 +64,7 @@ function formatProduct(product) {
         return product.text;
     }
     const $container = $('<div class="product-container">');
-    $container.append(`<img src="{{asset('storage/${product.image}')}}" alt="${product.id}" class="product-image" style="whidth:50px;height:50px;">`);
+    $container.append(`<img src="/storage/${product.image}" alt="${product.id}" class="product-image" style="whidth:50px;height:50px;">`);
     $container.append(`<span class="product-text"> ${product.text} </span>`);
     return $container;
 }
@@ -81,7 +81,7 @@ function addProduct(product,up=null){
             total= product.totalProduct;
         }
         else{
-            img = `{{ asset('storage/${product.image}') }}`;
+            img = `/storage/${product.image}`;
             val = 1;
             total= product.price;
         }
