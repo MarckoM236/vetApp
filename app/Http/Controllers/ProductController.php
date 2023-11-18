@@ -25,12 +25,20 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($stock = null)
     {
         $products = $this->model::join('categories','products.category_id','=','categories.id')
         ->join('brands','products.brand_id','=','brands.id')
-        ->select('products.*','categories.name as name_category','brands.name as name_brand')
-        ->get();
+        ->select('products.*','categories.name as name_category','brands.name as name_brand');
+        if($stock <> null && $stock==1){
+            $products->where('status',1)
+            ->where('stock_quantity','>=',3);
+        }
+        if($stock <> null && $stock==0){
+            $products->where('status',1)
+            ->where('stock_quantity','<=',3);
+        }
+        $products = $products->get();
         return view('products.index',['products'=>$products]);
     }
 
@@ -188,7 +196,7 @@ class ProductController extends Controller
                 $archivo = $request->file('photo');
                 $nombre = $archivo->getClientOriginalName();
                 $renombrado = time() . '_' . $nombre;
-                $ruta = $archivo->storeAs('product', $renombrado, 'public');
+                $ruta = $archivo->storeAs('products', $renombrado, 'public');
                 
                 $product -> photo = $ruta;
             }

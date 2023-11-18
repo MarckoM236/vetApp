@@ -75,7 +75,7 @@ function formatProduct(product) {
     return product.text;
   }
   var $container = $('<div class="product-container">');
-  $container.append("<img src=\"{{asset('storage/".concat(product.image, "')}}\" alt=\"").concat(product.id, "\" class=\"product-image\" style=\"whidth:50px;height:50px;\">"));
+  $container.append("<img src=\"/storage/".concat(product.image, "\" alt=\"").concat(product.id, "\" class=\"product-image\" style=\"whidth:50px;height:50px;\">"));
   $container.append("<span class=\"product-text\"> ".concat(product.text, " </span>"));
   return $container;
 }
@@ -92,7 +92,7 @@ function addProduct(product) {
       val = product.quantity;
       total = product.totalProduct;
     } else {
-      img = "{{ asset('storage/".concat(product.image, "') }}");
+      img = "/storage/".concat(product.image);
       val = 1;
       total = product.price;
     }
