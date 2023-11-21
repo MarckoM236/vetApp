@@ -5,6 +5,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InventoryAdjustmentController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\SaleController;
@@ -55,6 +56,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/sale/create',[SaleController::class,'store'])->name('sale.store');
     Route::get('/sale/index',[SaleController::class,'index'])->name('sale.index');
     Route::get('/sale/{id}/view',[SaleController::class,'show'])->name('sale.view');
+
+    //invoice
+    Route::get('/invoice/{id}',[InvoiceController::class,'generatePdf'])->name('invoice.pdf');
 });
 
 //users logged in with administrator role

@@ -103,7 +103,7 @@ class SaleController extends Controller
                 }
                 $payment_details->save();
 
-                return redirect()->route('sale.index')->with('success', 'Se registro la venta exitosamente');
+                return redirect()->route('sale.index')->with(['success'=>'Se registro la venta exitosamente','id_sale'=>$saleId]);
             }
             else{
                 return redirect()->route('sale.index')->with('error', 'Hubo un error al registrar la venta.');

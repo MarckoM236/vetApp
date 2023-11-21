@@ -52,6 +52,8 @@
                                 ||
                                 <a href="#" class="btn btn-outline-danger" id="saleNull" onclick="saleCancel({{$sale->id}})" title="Anular Venta"><i class="fa fa-ban" aria-hidden="true"></i></a>
                             @endif
+                            ||
+                            <a href="{{route('invoice.pdf',['id'=>$sale->id])}}" class="btn btn-outline-primary"  title="Generar factura" target="_blank"><i class="fa fa-file-text-o" aria-hidden="true"></i></a>
                         </div>
                     </td>
                 </tr> 
@@ -69,11 +71,20 @@
 </script>
 @if(session('success'))
     <script>    
-        Swal.fire(
-        'Exito!',
-        '{{ session('success') }}',
-        'success'
-        )
+        Swal.fire({
+        title: '{{ session('success') }}',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: "Generar Factura",
+        denyButtonText: `No generar Factura`
+        }).then((result) => {
+        
+        if (result.isConfirmed) {
+            window.open("{{ route('invoice.pdf', ['id' => session('id_sale')]) }}", '_blank');
+        } else if (result.isDenied) {
+            Swal.fire("Factura no generada", "", "info");
+        }
+        });
     </script>
 @endif
 @if(session('error'))
