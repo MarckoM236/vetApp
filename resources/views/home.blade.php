@@ -12,7 +12,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center align-items-center">
-        @if(Auth::user()->id == 1)
+        @if(Auth::user()->role_id == 1)
         <div class="col-md-3">
             <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
                 <div class="card-body">
@@ -107,7 +107,7 @@
         <div class="col-md-6">
             <canvas id="chart_sales"></canvas>
         </div>
-        @if(Auth::user()->id == 1)
+        @if(Auth::user()->role_id == 1)
         <div class="col-md-6">
             <canvas id="chart_purchases"></canvas>
         </div>
@@ -160,7 +160,7 @@
     });
 </script>
 
-@if(Auth::user()->id == 1)
+@if(Auth::user()->role_id == 1)
 <script>
     const chart_purchases = document.getElementById('chart_purchases');
     let purchases = @json($chart_sale);//data php

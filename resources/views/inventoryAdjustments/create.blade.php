@@ -104,7 +104,7 @@
                 <div class="col">
                     <div class="form-group mb-3">
                         <label for="reason" class="form-label ">Motivo</label>
-                        <textarea class="form-control @error('reason') is-invalid @enderror" name="reason" id="reason" cols="30" rows="4" required>{{ old('quantity') }}</textarea>
+                        <textarea class="form-control @error('reason') is-invalid @enderror" name="reason" id="reason" cols="30" rows="4" required>{{ old('reason') }}</textarea>
                         @error('reason')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
@@ -191,6 +191,7 @@
 
                                 $('#code').val("");
                                 $("#error").text("");
+
                             }
    
                         },

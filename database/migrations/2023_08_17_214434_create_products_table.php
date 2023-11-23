@@ -23,6 +23,7 @@ class CreateProductsTable extends Migration
             $table->decimal('stock_quantity')->nullable()->default(0);
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('brand_id');
+            $table->boolean('status')->default(0);
             $table->timestamps();
 
             $table->foreign('category_id')->references('id')->on('categories');

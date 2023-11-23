@@ -44,7 +44,7 @@
         <div class="form-group mb-3">
             <label for="description" class="form-label ">Descripcion</label>
 
-            <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $product->description }}" autocomplete="description" autofocus>
+            <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ $product->description }}" required autocomplete="description" autofocus>
 
             @error('description')
                 <span class="invalid-feedback" role="alert">
@@ -57,7 +57,7 @@
         <div class="form-group mb-3">
             <label for="category" class="form-label ">Categoria</label>
 
-            <select class="form-select" name="category" id="category" required>
+            <select class="form-select @error('category') is-invalid @enderror" name="category" id="category" required>
                 <option value="">Seleccione una categoria</option>
                 @foreach($categories as $category)
                 <option  value="{{$category->id}}" @if($product->category_id == $category->id) selected @endif>{{$category->name}}</option>
@@ -75,7 +75,7 @@
         <div class="form-group mb-3">
             <label for="brand" class="form-label ">Marca</label>
 
-            <select class="form-select" name="brand" id="brand" required>
+            <select class="form-select @error('brand') is-invalid @enderror" name="brand" id="brand" required>
                 <option value="" >Seleccione una categoria</option>
                 @foreach($brands as $brand)
                 <option value="{{$brand->id}}" @if($product->brand_id == $brand->id) selected @endif>{{$brand->name}}</option>

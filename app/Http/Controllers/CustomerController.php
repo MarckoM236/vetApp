@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CustomerStoreRequest;
+use App\Http\Requests\CustomerUpdateRequest;
 use App\Models\Customer;
-use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class CustomerController extends Controller
 {
@@ -40,19 +42,9 @@ class CustomerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CustomerStoreRequest $request)
     {
         try{
-            $request->validate([
-                'identificacion' => ['required', 'numeric', 'min:7','unique:customers'],
-                'name' => ['required', 'string', 'max:255'],
-                'lastName' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255'],
-                'address' => ['nullable', 'string', 'max:255'],
-                'phone' => ['nullable', 'numeric', 'min:7'],
-                'city' => ['nullable', 'string', 'max:255'],
-                'neighborhood' => ['nullable','string', 'max:255']
-            ]);
 
             $customerExist = $this->model::where('customers.identificacion',$request->identificacion)
             ->exists();
@@ -75,7 +67,7 @@ class CustomerController extends Controller
                 return redirect()->route('customer.index')->with('success', 'Cliente creado exitosamente');
             }
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
     }
@@ -119,19 +111,10 @@ class CustomerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CustomerUpdateRequest $request, $id)
     {
         try{
-            $request->validate([
-                'identificacion' => ['required', 'numeric', 'min:7'],
-                'name' => ['required', 'string', 'max:255'],
-                'lastName' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255'],
-                'address' => ['nullable', 'string', 'max:255'],
-                'phone' => ['nullable', 'numeric', 'min:7'],
-                'city' => ['nullable', 'string', 'max:255'],
-                'neighborhood' => ['nullable','string', 'max:255']
-            ]);
+            
             $customer = $this->model::find($id);
             if (!$customer) {
                 return redirect()->route('customer.index')->with('error', 'Cliente no encontrado');
@@ -159,7 +142,7 @@ class CustomerController extends Controller
                 return redirect()->route('customer.index')->with('success', 'Cliente actualizado exitosamente');
             }
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
     }

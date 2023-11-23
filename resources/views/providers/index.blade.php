@@ -7,7 +7,7 @@
 @section('head')
 <div class="container text-center pt-5">
     <h1>Proveedores Registrados</h1>
-
+    @if(Auth::user()->role_id == 1)
     <div class="row mt-5">
         <div class="col-10 d-flex justify-content-between align-items-center">
         </div>
@@ -15,6 +15,7 @@
             <a href="{{route('provider.create')}}" class="btn btn-success">Nuevo Proveedor</a>
         </div>
     </div>
+    @endif
 </div>
 @endsection
 

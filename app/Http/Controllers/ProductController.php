@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductStoreRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
@@ -60,16 +63,9 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductStoreRequest $request)
     {
         try{
-            $request->validate([
-                'code'=>['required', 'string', 'max:255'],
-                'name'=>['required', 'string', 'max:255'],
-                'description'=>['required', 'string', 'max:255'],
-                'category'=>['required'],
-                'brand'=>['required']
-            ]);
 
             $productExist = $this->model::where('products.code',$request->code)
             ->exists();
@@ -98,7 +94,7 @@ class ProductController extends Controller
                 return redirect()->route('product.index')->with('success', 'Producto creado exitosamente');
             }
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
     }
@@ -154,16 +150,9 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductUpdateRequest $request, $id)
     {
         try{
-            $request->validate([
-                'code'=>['required', 'string', 'max:255'],
-                'name'=>['required', 'string', 'max:255'],
-                'description'=>['required', 'string', 'max:255'],
-                'category'=>['required'],
-                'brand'=>['required']
-            ]);
 
             $product = $this->model::find($id);
             if (!$product) {
@@ -204,7 +193,7 @@ class ProductController extends Controller
 
             return redirect()->route('product.index')->with('success', 'Producto actualizado exitosamente');
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }   
     }

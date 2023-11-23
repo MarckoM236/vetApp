@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BrandRequest;
 use App\Models\Brand;
-use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class BrandController extends Controller
 {
@@ -40,12 +41,9 @@ class BrandController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BrandRequest $request)
     {
         try{
-            $request->validate([
-                'brand'=>['required', 'string', 'max:255']
-            ]);
 
             $brand_sh = strtolower($request->brand);
             $brand = $this->model::where('name', 'like', '%' . $brand_sh . '%')->first();
@@ -58,7 +56,7 @@ class BrandController extends Controller
             $brand_qr->save();
             return redirect()->route('brand.index')->with('success', 'Marca registrada exitoisamente');
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
     }
@@ -86,12 +84,10 @@ class BrandController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(BrandRequest $request, $id)
     {
         try{
-            $request->validate([
-                'brand'=>['required', 'string', 'max:255']
-            ]);
+            
             $brand_qr = $this->model::find($id);
             if (!$brand_qr) {
                 return redirect()->route('brand.index')->with('error', 'Marca No encontrada');
@@ -107,7 +103,7 @@ class BrandController extends Controller
             $brand_qr->save();
             return redirect()->route('brand.index')->with('success', 'Marca actualizada exitosamente');
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
     }

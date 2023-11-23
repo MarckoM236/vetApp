@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\InventoryRequest;
 use App\Models\Inventory_adjustment;
-use App\Models\Product as ModelsProduct;
 use App\Utils\Product;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class InventoryAdjustmentController extends Controller
 {
@@ -48,16 +48,9 @@ class InventoryAdjustmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(InventoryRequest $request)
     {
         try {
-            $messages = ['productId.required'=>'Debe indicar a que producto realizara el ajuste'];
-            $request->validate([
-                'type'=>['required'],
-                'quantity'=>['required','numeric'],
-                'reason'=>['required'],
-                'productId'=>['required']
-            ],$messages);
 
             $adjustment = $this->model;
             $adjustment->user_id = Auth::user()->id;
@@ -72,7 +65,7 @@ class InventoryAdjustmentController extends Controller
 
             return redirect()->route('adjustment.index')->with('success', 'Se realizo el Ajuste de stock exitosamente');
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
     }
@@ -94,39 +87,5 @@ class InventoryAdjustmentController extends Controller
         ->get();
 
         return view('inventoryAdjustments.view',['adjustments'=>$adjustments]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+    } 
 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProviderStoreRequest;
+use App\Http\Requests\ProviderUpdateRequest;
 use App\Models\Provider;
-use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ProviderController extends Controller
 {
@@ -41,16 +43,9 @@ class ProviderController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProviderStoreRequest $request)
     {
         try{
-            $request->validate([
-                'nit'=>['required', 'numeric', 'min:7','unique:providers'],
-                'name'=>['required', 'string', 'max:255'],
-                'contact'=>['required', 'string', 'max:255'],
-                'email'=>['required', 'string', 'email', 'max:255'],
-                'phone'=>['required', 'numeric', 'min:7']
-            ]);
 
             $providerExist = $this->model::where('providers.nit',$request->nit)
             ->exists();
@@ -70,7 +65,7 @@ class ProviderController extends Controller
                 return redirect()->route('provider.index')->with('success', 'Proveedor creado exitosamente');
             }
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
     }
@@ -114,16 +109,9 @@ class ProviderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProviderUpdateRequest $request, $id)
     {
         try{
-            $request->validate([
-                'nit'=>['required', 'numeric', 'min:7'],
-                'name'=>['required', 'string', 'max:255'],
-                'contact'=>['required', 'string', 'max:255'],
-                'email'=>['required', 'string', 'email', 'max:255'],
-                'phone'=>['required', 'numeric', 'min:7']
-            ]);
 
             $provider = $this->model::find($id);
             if (!$provider) {
@@ -147,7 +135,7 @@ class ProviderController extends Controller
 
             return redirect()->route('provider.index')->with('success', 'Proveedor actualizado exitosamente');
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
     }

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
-use Exception;
-use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class CategoryController extends Controller
 {
@@ -41,12 +41,9 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
         try{
-            $request->validate([
-                'category'=>['required', 'string', 'max:255']
-            ]);
 
             $category_sh = strtolower($request->category);
             $category = $this->model::where('name', 'like', '%' . $category_sh . '%')->first();
@@ -59,7 +56,7 @@ class CategoryController extends Controller
             $category_qr->save();
             return redirect()->route('category.index')->with('success', 'Categoria registrada exitoisamente');
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
     }
@@ -87,12 +84,10 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, $id)
     {
         try{
-            $request->validate([
-                'category'=>['required', 'string', 'max:255']
-            ]);
+            
             $category_qr = $this->model::find($id);
             if (!$category_qr) {
                 return redirect()->route('category.index')->with('error', 'Categoria No encontrada');
@@ -108,7 +103,7 @@ class CategoryController extends Controller
             $category_qr->save();
             return redirect()->route('category.index')->with('success', 'Categoria actualizada exitosamente');
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
     }

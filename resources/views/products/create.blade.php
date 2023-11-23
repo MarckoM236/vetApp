@@ -43,7 +43,7 @@
         <div class="form-group mb-3">
             <label for="description" class="form-label ">Descripcion</label>
 
-            <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ old('description') }}" autocomplete="description" autofocus>
+            <input id="description" type="text" class="form-control @error('description') is-invalid @enderror" name="description" value="{{ old('description') }}" required autocomplete="description" autofocus>
 
             @error('description')
                 <span class="invalid-feedback" role="alert">
@@ -54,12 +54,12 @@
         </div>
 
         <div class="form-group mb-3">
-            <label for="category" class="form-label ">Categoria</label>
+            <label for="category" class="form-label">Categoria</label>
 
-            <select class="form-select" name="category" id="category" required>
-                <option value="" selected>Seleccione una categoria</option>
+            <select class="form-select @error('category') is-invalid @enderror" name="category" id="category" required>
+                <option value="" @if(old('category') != "") selected @endif>Seleccione una categoria</option>
                 @foreach($categories as $category)
-                <option value="{{$category->id}}">{{$category->name}}</option>
+                <option value="{{$category->id}}" @if(old('category') == $category->id) selected @endif>{{$category->name}}</option>
                 @endforeach
             </select>
 
@@ -74,10 +74,10 @@
         <div class="form-group mb-3">
             <label for="brand" class="form-label ">Marca</label>
 
-            <select class="form-select" name="brand" id="brand" required>
-                <option value="" selected>Seleccione una categoria</option>
+            <select class="form-select @error('brand') is-invalid @enderror" name="brand" id="brand" required>
+                <option value="" @if(old('brand') != "") selected @endif>Seleccione una categoria</option>
                 @foreach($brands as $brand)
-                <option value="{{$brand->id}}">{{$brand->name}}</option>
+                <option value="{{$brand->id}}" @if(old('brand') == $brand->id) selected @endif>{{$brand->name}}</option>
                 @endforeach
             </select>
 

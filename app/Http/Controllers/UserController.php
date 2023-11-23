@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use \Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -46,18 +49,10 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
         try{
-            $request->validate([
-                'identificacion' => ['required', 'string', 'max:255','unique:users'],
-                'name' => ['required', 'string', 'max:255'],
-                'lastName' => ['required', 'string', 'max:255'],
-                'lastName' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'string', 'min:8', 'confirmed']
-            ]);
-
+            
             $userExist = $this->model::where('users.identificacion',$request->identificacion)
             ->exists();
             if($userExist){
@@ -86,7 +81,7 @@ class UserController extends Controller
                 return redirect()->route('user.index')->with('success', 'Usuario creado exitosamente');
             }
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
     }
@@ -130,16 +125,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UserUpdateRequest $request, $id)
     {
         try{
-            $request->validate([
-                'identificacion' => ['required', 'string', 'max:255'],
-                'name' => ['required', 'string', 'max:255'],
-                'lastName' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255'],
-                'password' => ['nullable', 'required_if:switch,on', 'string', 'min:8', 'confirmed']
-            ]);
 
             $user = $this->model::find($id);
             if (!$user) {
@@ -185,7 +173,7 @@ class UserController extends Controller
 
             return redirect()->route('user.index')->with('success', 'Usuario actualizado exitosamente');
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }   
     }

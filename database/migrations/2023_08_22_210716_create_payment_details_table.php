@@ -18,7 +18,7 @@ class CreatePaymentDetailsTable extends Migration
             $table->unsignedBigInteger('sales_id');
             $table->string('payment_status');
             $table->string('payment_method');
-            $table->string('payment_reference');
+            $table->string('payment_reference')->nullable()->default(NULL);
             $table->timestamps();
 
             $table->foreign('sales_id')->references('id')->on('sales');

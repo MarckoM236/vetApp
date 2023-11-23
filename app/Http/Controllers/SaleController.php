@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SaleRequest;
 use App\Models\Payment_detail;
 use App\Models\Sale;
 use App\Models\Sale_detail;
@@ -9,6 +10,7 @@ use App\Utils\Invoice;
 use App\Utils\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class SaleController extends Controller
 {
@@ -52,15 +54,9 @@ class SaleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SaleRequest $request)
     {
         try{
-            $request->validate([
-                'customer_cedula'=>['nullable','numeric','min:7'],
-                'products'=>['required'],
-                'payment_status'=>['required'],
-                'payment_method'=>['required']
-            ]);
 
             $invoiceExist = $this->model::where('sales.invoice','=',$request->invoice)->exists();
             if($invoiceExist){
@@ -109,7 +105,7 @@ class SaleController extends Controller
                 return redirect()->route('sale.index')->with('error', 'Hubo un error al registrar la venta.');
             }
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         }
 
@@ -201,7 +197,7 @@ class SaleController extends Controller
                 return response()->json(['success' => false, 'message' => 'La factura ya se encuentra anulada.']);
             }
             
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return back()->withErrors($e->validator)->withInput();
         } 
     }

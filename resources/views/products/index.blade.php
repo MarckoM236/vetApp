@@ -8,6 +8,7 @@
 <div class="container text-center pt-5">
     <h1>Productos Registrados</h1>
 
+    @if(Auth::user()->role_id == 1)
     <div class="row mt-5">
         <div class="col-10 d-flex justify-content-between align-items-center">
             <a href="{{route('barcode.index')}}" class="btn btn-success">Codigos de Barras</a>
@@ -16,6 +17,7 @@
             <a href="{{route('product.create')}}" class="btn btn-success">Nuevo Producto</a>
         </div>
     </div>
+    @endif
 </div>
 @endsection
 

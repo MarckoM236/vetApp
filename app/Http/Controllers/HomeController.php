@@ -51,7 +51,7 @@ class HomeController extends Controller
         $chart_product->name_product = "";
         $chart_product->quantity_product = "";
 
-        if(Auth::user()->id == 1){
+        if(Auth::user()->role_id == 1){
             $total_sale = Sale::select(DB::raw('SUM(total_amount) AS total_sale'))
             ->where('status', '=', 1)
             ->whereBetween('created_at', [now()->subDays(30), now()->addDay()])
@@ -78,7 +78,9 @@ class HomeController extends Controller
             ->get();
 
             $chart_product = Sale_detail::join('products','sale_details.product_id','products.id')
+            ->join('sales','sales.id','sale_details.sale_id')
             ->select(DB::raw('products.name AS name_product'),DB::raw('SUM(sale_details.quantity) AS quantity_product'))
+            ->where('sales.status',1)
             ->groupBy('product_id')
             ->orderBy('quantity_product', 'DESC')
             ->limit(3)
